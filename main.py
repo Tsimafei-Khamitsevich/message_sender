@@ -70,9 +70,9 @@ def login(driver):
     credentials = extract_config_from_file("credentials.txt")
         
     driver.get("https://mobilemarketing.by/login")
-    driver.find_element_by_xpath("//input[@id='username']").send_keys(credentials['login'])
-    driver.find_element_by_xpath("//input[@id='password']").send_keys(credentials['password'])
-    driver.find_element_by_xpath("//button[@id='process']").click()
+    driver.find_element(by=By.XPATH, value="//input[@id='username']").send_keys(credentials['login'])
+    driver.find_element(by=By.XPATH, value="//input[@id='password']").send_keys(credentials['password'])
+    driver.find_element(by=By.XPATH, value="//button[@id='process']").click()
     
     return driver
 
@@ -138,19 +138,22 @@ def load_files(driver):
     
         driver.get("https://smsline.by/iface/main#/base/load")
         
-        uploader = driver.find_element_by_xpath(
-            "/html/body/div[2]/div[2]/div[2]/div/div/div/div/div[1]/form/div/div[1]/span[1]/input")
+        uploader = driver.find_element(
+            by=By.XPATH, 
+            value="/html/body/div[2]/div[2]/div[2]/div/div/div/div/div[1]/form/div/div[1]/span[1]/input")
         uploader.send_keys(file_path)
        
         
-        button = driver.find_element_by_xpath("//button[@class='btn btn-primary']")
+        button = driver.find_element(by=By.XPATH, 
+                                              value="//button[@class='btn btn-primary']")
         driver.execute_script("arguments[0].click()", button)
         
         
         div1 = wait.until(EC.presence_of_element_located(
             (By.XPATH, "//div[@class='panel panel-danger'] | //div[@class='panel panel-success']")
             ))
-        div = div1.find_element_by_xpath(".//div[@class='panel-heading']")
+        div = div1.find_element(by=By.XPATH,
+                                         value=".//div[@class='panel-heading']")
             
         mes = div.text
         ind = mes.find(":")
@@ -172,7 +175,8 @@ def load_files(driver):
             print("")
             raise Exception ("Uploading files: unknown message")
         
-        driver.find_element_by_xpath("//button[@class='btn btn-primary col-lg-2 pull-right']").click()
+        driver.find_element(by=By.XPATH, 
+                                     value="//button[@class='btn btn-primary col-lg-2 pull-right']").click()
     
     return driver, loaded_files
 
@@ -193,14 +197,15 @@ def load_all_files(driver):
     
     driver.get("https://smsline.by/iface/main#/base/load")
     
-    uploader = driver.find_element_by_xpath(
-        "/html/body/div[2]/div[2]/div[2]/div/div/div/div/div[1]/form/div/div[1]/span[1]/input")
+    uploader = driver.find_element(
+        by=By.XPATH, 
+        value="/html/body/div[2]/div[2]/div[2]/div/div/div/div/div[1]/form/div/div[1]/span[1]/input")
     
     for file in file_names:
         file_path = os.path.join(path_external, file)
         uploader.send_keys(file_path)
         
-    button = driver.find_element_by_xpath("//button[@class='btn btn-primary']")
+    button = driver.find_element(by=By.XPATH, value="//button[@class='btn btn-primary']")
     driver.execute_script("arguments[0].click()", button)
     
     div = wait.until(EC.presence_of_element_located(
@@ -240,7 +245,7 @@ def load_all_files(driver):
     
     report_load(loaded, load_error, unknown_name, unknown_mes)
     
-    driver.find_element_by_xpath("//button[@class='btn btn-primary col-lg-2 pull-right']").click()
+    driver.find_element(by=By.XPATH, value="//button[@class='btn btn-primary col-lg-2 pull-right']").click()
     
     return driver, loaded
 
@@ -406,7 +411,7 @@ def send_sms(driver, loaded_files):
         
         sel.select_by_visible_text(message_details['service_number'])
         
-        sel = Select(driver.find_element_by_name("selectBase"))
+        sel = Select(driver.find_element(by=By.NAME, value="selectBase"))
         
         value = select_file_name_to_send(sel, file)
         
@@ -415,12 +420,14 @@ def send_sms(driver, loaded_files):
         else:
             sel.select_by_visible_text(file)
         
-        driver.find_element_by_xpath(
-            "//textarea[@name='inputText_0']"
+        driver.find_element(
+            by=By.XPATH,
+            value="//textarea[@name='inputText_0']"
             ).send_keys(message_details['message_text'])
         
-        driver.find_element_by_xpath(
-            "/html/body/div[2]/div[2]/div[2]/div/div/form/div[6]/div/button"
+        driver.find_element(
+            by=By.XPATH,
+            value="/html/body/div[2]/div[2]/div[2]/div/div/form/div[6]/div/button"
             ).click()
         time.sleep(5)
 
