@@ -88,12 +88,36 @@ def list_files(standartize, path):
     """
     
     file_names = os.listdir(path)
+    
+    file_names = pick_xls_files(file_names)    
+    
     if standartize:
         file_names = [os.path.splitext(file)[0] for file in file_names]
         return [' '.join(file.split()) for file in file_names]
     else:
         return file_names
 
+
+def pick_xls_files(file_names):
+    """
+
+    Parameters
+    ----------
+    file_names : LIST
+        
+    Returns
+    -------
+    files_xls : LIST
+        Files with 'xls', 'xlsx' extension.
+
+    """
+    
+    files_xls = []
+    for file in file_names:
+        if os.path.splitext(file)[1] in ('.xls', '.xlsx'):
+            files_xls.append(file)
+    
+    return files_xls
 
 def extract_config_from_file(file_name):
     """
@@ -207,15 +231,19 @@ def load_all_files(driver):
         
     button = driver.find_element(by=By.XPATH, value="//button[@class='btn btn-primary']")
     driver.execute_script("arguments[0].click()", button)
-    
+    # time.sleep(2)
     div = wait.until(EC.presence_of_element_located(
         (By.XPATH, "//div[@class='modal-body ng-scope']")
         ))
-    div = div.find_elements_by_xpath(".//div[@class='panel-heading']")
+    time.sleep(1)
+    div = div.find_elements(by=By.XPATH, value=".//div[@class='panel-heading']")
+    # div = div.find_element_by_xpath(".//div[@class='panel-heading']")
+    
     
     loaded, load_error = [], []
     unknown_name, unknown_mes = [], []
     
+    # print(div)
     for i in div:
         try:
             i = i.text
@@ -330,8 +358,8 @@ def select_file_name_to_send_version_1(select, file):
     
     matches = []
     pattern = re.compile("^((" + file + ")|(" + file + ") \((\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\)" + ")$")
-    
-    for option in select.options[:100:-1]:
+        
+    for option in select.options[:-50:-1]:
         
         text = option.get_attribute("text")
         val = option.get_attribute("value")
@@ -374,7 +402,7 @@ def select_file_name_to_send(select, file):
     
     pattern = re.compile("^((" + file + ")|(" + file + ") \((\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\)" + ")$")
     
-    for option in select.options[:100:-1]:
+    for option in select.options[:-50:-1]:
         
         text = option.get_attribute("text")
         match = pattern.match(text)
@@ -446,21 +474,18 @@ def move_sended_files(loaded_files):
     os.mkdir(archive_fld)
     time.sleep(2)
     
-    move_files(sms_fld, archive_fld)
+    move_files(sms_fld, archive_fld, loaded_files)
     
-    """
-    for file in loaded_files:
-        old_file = os.path.join(path, file)
-        new_file = os.path.join(archive_fld, file)
-        os.rename(old_file, new_file)
-    """
     
-def move_files(from_path, to_path):
+def move_files(from_path, to_path, spec_files=None):
     """
     Moves files from one directory
     to another
     """
-    files = os.listdir(from_path)
+    if spec_files:
+        files = spec_files
+    else:
+        files = os.listdir(from_path)
     
     for file in files:
         old = os.path.join(from_path, file)
@@ -481,8 +506,8 @@ def main():
     driver = login(driver)
     driver, loaded_files = load_all_files(driver)
     
-    #loaded_files = list_files(False, sms_fld)
-    #print(loaded_files)
+    # loaded_files = list_files(False, sms_fld)
+    # print(loaded_files)
     
     send_sms(driver, loaded_files)
     
