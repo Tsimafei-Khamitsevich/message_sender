@@ -1,6 +1,7 @@
 # message_sender
 
 The Script automates bulk message mailing by 'bamboo group'.
+
 Links:
 'bamboo group' : https://mobilemarketing.by/l
 The service script automates : https://mobilemarketing.by/sms
