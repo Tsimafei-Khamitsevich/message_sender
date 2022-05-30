@@ -2,8 +2,8 @@
 
 The Script automates bulk message mailing by 'bamboo group'.
 
-Links:
-'bamboo group' : https://mobilemarketing.by/l
+Links:<br>
+'bamboo group' : https://mobilemarketing.by/l<br>
 The service script automates : https://mobilemarketing.by/sms
 
 Prerequests:
