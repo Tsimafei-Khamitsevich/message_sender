@@ -12,6 +12,6 @@ Prerequests:
 </ul>
 
 Links:<br>
-'bamboo group' : https://mobilemarketing.by/l<br>
+'bamboo group' : https://mobilemarketing.by/<br>
 The service script automates : https://mobilemarketing.by/sms<br>
 'geckodriver.exe' : https://github.com/mozilla/geckodriver/releases
